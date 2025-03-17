@@ -21,7 +21,8 @@
 <summary>Table of Contents</summary>
 <ol>
   <li><a href="#getting-started">Getting started</a></li>
-  <li><a href="#python-keygen-tool">Getting started</a></li>
+  <li><a href="#python-keygen-tool">Keygen tool</a></li>
+  <li><a href="#licencing">Licencing</a></li>
 </ol>
 
 
@@ -68,8 +69,21 @@ da777fae169f7bfeca,badcafe9afacb231fa
 ```
 
 
+## Licence
+Shield: [![CC BY 4.0][cc-by-shield]][cc-by]
+
+This work is licensed under a
+[Creative Commons Attribution 4.0 International License][cc-by].
+
+[![CC BY 4.0][cc-by-image]][cc-by]
+
+
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [python]: images/badge/python.svg
 [github]: images/badge/github.svg
 [github-url]: https://github.com
+[cc-by]: http://creativecommons.org/licenses/by/4.0/
+[cc-by-image]: images/badge/licence_badge.png
+[cc-by-shield]: images/badge/license_cc_by.svg

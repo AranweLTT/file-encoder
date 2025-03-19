@@ -69,14 +69,11 @@ da777fae169f7bfeca,badcafe9afacb231fa
 ```
 
 
+<!-- LICENCE -->
 ## Licence
-Shield: [![CC BY 4.0][cc-by-shield]][cc-by]
+[![License: GPL v3][gpl3-badge]][gpl3-url]
 
-This work is licensed under a
-[Creative Commons Attribution 4.0 International License][cc-by].
-
-[![CC BY 4.0][cc-by-image]][cc-by]
-
+This work is licensed under a GNU GPL v3 licence. See [LICENCE.md](LICENCE.md) for more information.
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -84,6 +81,5 @@ This work is licensed under a
 [python]: images/badge/python.svg
 [github]: images/badge/github.svg
 [github-url]: https://github.com
-[cc-by]: http://creativecommons.org/licenses/by/4.0/
-[cc-by-image]: images/badge/licence_badge.png
-[cc-by-shield]: images/badge/license_cc_by.svg
+[gpl3-url]: https://www.gnu.org/licenses/gpl-3.0
+[gpl3-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg

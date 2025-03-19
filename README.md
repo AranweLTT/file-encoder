@@ -32,7 +32,7 @@ Start by cloning this repository.
 ```sh
 git clone 'https://github.com/AranweLTT/file-encoder.git'
 ```
-Next you can build the program
+Next you can build the program. You might need to install `build-essentials`.
 ```sh
 g++ main.cpp lea9.cpp -o file-encoder
 ```
@@ -73,7 +73,7 @@ da777fae169f7bfeca,badcafe9afacb231fa
 ## Licence
 [![License: GPL v3][gpl3-badge]][gpl3-url]
 
-This work is licensed under a GNU GPL v3 licence. See [LICENCE.md](LICENCE.md) for more information.
+This work is licensed under a GNU GPL v3 licence.
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

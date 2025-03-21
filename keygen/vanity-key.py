@@ -20,7 +20,7 @@ def find_key(key_a):
     # Compute key
     try:
         key_b = np.round(np.linalg.inv(key_a)*det*alpha).astype(int) % 256
-    except:
+    except Exception:
         key_b = np.zeros((3,3))
     res = (np.matmul(key_a,key_b)).astype(int) % 256
     if (res == np.identity(3)).all:
@@ -42,7 +42,7 @@ def generate_key_pair():
     while True:
         key_a = np.random.randint(1, 256, size=(3, 3))
         key_b = find_key(key_a)
-        if np.isscalar(key_b) == False:
+        if not np.isscalar(key_b) :
             return key_a, key_b
 
 

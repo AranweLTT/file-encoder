@@ -23,7 +23,7 @@ def find_key(key_a):
     # Compute key
     try:
         key_b = np.round(np.linalg.inv(key_a)*det*alpha).astype(int) % 256
-    except:
+    except Exception:
         key_b = np.zeros((3,3))
     res = (np.matmul(key_a,key_b)).astype(int) % 256
     if (res == np.identity(3)).all:

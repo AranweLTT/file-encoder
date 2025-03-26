@@ -17,14 +17,23 @@ def find_key(key_a):
     alpha = mod_inverse(det, 256)
 
     # Compute key
-    try:
-        key_b = np.round(np.linalg.inv(key_a) * det * alpha).astype(int) % 256
-    except Exception:
-        key_b = np.zeros((3, 3))
-    res = (np.matmul(key_a, key_b)).astype(int) % 256
-    if (res == np.identity(3)).all:
-        return key_b
+    if alpha != -1:
+        try:
+            key_b = np.round(np.linalg.inv(key_a) * det * alpha).astype(int) % 256
+        except Exception:
+            key_b = np.zeros((3, 3))
+        res = (np.matmul(key_a, key_b)).astype(int) % 256
+        if (res == np.identity(3)).all:
+            return key_b
     return -1
+
+
+def generate_key_pair():
+    while True:
+        key_a = np.random.randint(1, 256, size=(3, 3))
+        key_b = find_key(key_a)
+        if not np.isscalar(key_b):
+            return key_a, key_b
 
 
 def keytohex(key):
@@ -39,8 +48,7 @@ if __name__ == "__main__":
     # Generate keys
     print("Generating public and private keys...")
     # np.random.seed(0)
-    key_a = np.random.randint(0, 256, size=(3, 3))
-    key_b = find_key(key_a)
+    key_a, key_b = generate_key_pair()
 
     # Test keys
     print("Testing key pair...")

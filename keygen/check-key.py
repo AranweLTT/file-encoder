@@ -45,7 +45,7 @@ if __name__ == "__main__":
         np.round(np.linalg.inv(private_matrix) * det * alpha).astype(int) % 256
     )
 
-    det = np.round(np.linalg.det(private_matrix)).astype(int)
+    det = np.round(np.linalg.det(public_matrix)).astype(int)
     alpha = mod_inverse(det, 256)
     public_inv = np.round(np.linalg.inv(public_matrix) * det * alpha).astype(int) % 256
 
@@ -62,8 +62,7 @@ if __name__ == "__main__":
         (np.matmul(public_matrix, private_matrix)).astype(int) % 256, "public x private"
     )
     print_matrix(
-        (np.matmul(private_matrix, private_inv)).astype(int) % 256,
-        "private x private_inv",
+        (np.matmul(private_matrix, private_inv)).astype(int) % 256, "private x private_inv"
     )
     print_matrix(
         (np.matmul(public_matrix, public_inv)).astype(int) % 256, "public x public_inv"

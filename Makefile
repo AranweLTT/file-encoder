@@ -12,7 +12,6 @@ all:
 	@echo "🚧 Building..."
 	mkdir -p $(TGTDIR)
 	$(CC) $(CXX_FLAGS) encoder/main.cpp encoder/lea9.cpp -o $(TGTDIR)/file-encoder
-	$(CC) $(CXX_FLAGS) keygen/vanity-key-bulk.cpp -o $(TGTDIR)/vanity-key-bulk
 	@echo "Done!"
 
 release: 

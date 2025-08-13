@@ -5,15 +5,6 @@ import os
 # ----------------------
 # GF(2) helpers (8x8)
 # ----------------------
-def byte_to_vec(b: int) -> np.ndarray:
-    return np.unpackbits(np.array([b], dtype=np.uint8)).reshape(8, 1)
-
-def vec_to_byte(v: np.ndarray) -> int:
-    return int(np.packbits(v.reshape(-1))[0])
-
-def mat_mult(A: np.ndarray, B: np.ndarray) -> np.ndarray:
-    return (A.dot(B) % 2).astype(np.uint8)
-
 def gf2_inv(A: np.ndarray) -> np.ndarray:
     A = A.copy().astype(np.uint8)
     n = 8
@@ -42,15 +33,6 @@ def is_invertible(A: np.ndarray) -> bool:
         return True
     except ValueError:
         return False
-
-def mat_to_hex(M: np.ndarray) -> str:
-    rows = []
-    for r in range(8):
-        val = 0
-        for bit in range(8):
-            val = (val << 1) | int(M[r, bit] & 1)
-        rows.append(val)
-    return ''.join(f"{b:02x}" for b in rows)
 
 def hex_to_mat(h: str) -> np.ndarray:
     if len(h) != 16:
@@ -84,32 +66,35 @@ G, G_inv = fixed_G()
 # ----------------------
 # Encrypt / Decrypt
 # ----------------------
-def encrypt_byte(pubhex: str, pt_byte: int) -> int:
-    P = hex_to_mat(pubhex)
-    p = byte_to_vec(pt_byte)
-    c = mat_mult(P, p)
-    return vec_to_byte(c)
+def encrypt_chunk(pubhex: str, chunk: bytes) -> bytes:
+    """Encrypt a chunk of bytes using public key matrix."""
+    P = hex_to_mat(pubhex)  # 8x8
+    # Convert bytes -> bits (shape: nbytes x 8), then transpose to shape 8 x nbytes
+    bits = np.unpackbits(np.frombuffer(chunk, dtype=np.uint8)).reshape(-1, 8).T
+    # Matrix multiply over GF(2)
+    enc_bits = (P @ bits) % 2
+    # Transpose back, pack bits -> bytes
+    return np.packbits(enc_bits.T, axis=1).tobytes()
 
-def decrypt_byte(privhex: str, ct_byte: int) -> int:
+def decrypt_chunk(privhex: str, chunk: bytes) -> bytes:
+    """Decrypt a chunk of bytes using private key matrix."""
     S = hex_to_mat(privhex)
     S_inv = gf2_inv(S)
-    c = byte_to_vec(ct_byte)
-    y = mat_mult(S_inv, c)
-    u = mat_mult(G_inv, y)
-    p = mat_mult(S, u)
-    return vec_to_byte(p)
+    # Convert bytes -> bits
+    bits = np.unpackbits(np.frombuffer(chunk, dtype=np.uint8)).reshape(-1, 8).T
+    # Decrypt in one go: p = S @ (G_inv @ (S_inv @ c))
+    y = (S_inv @ bits) % 2
+    u = (G_inv @ y) % 2
+    p = (S @ u) % 2
+    return np.packbits(p.T, axis=1).tobytes()
 
-# ----------------------
-# File operations
-# ----------------------
 def encrypt_file(infile: str, outfile: str, pubhex: str):
     with open(infile, "rb") as f_in, open(outfile, "wb") as f_out:
         while True:
             chunk = f_in.read(4096)
             if not chunk:
                 break
-            encrypted = bytes([encrypt_byte(pubhex, b) for b in chunk])
-            f_out.write(encrypted)
+            f_out.write(encrypt_chunk(pubhex, chunk))
 
 def decrypt_file(infile: str, outfile: str, privhex: str):
     with open(infile, "rb") as f_in, open(outfile, "wb") as f_out:
@@ -117,8 +102,7 @@ def decrypt_file(infile: str, outfile: str, privhex: str):
             chunk = f_in.read(4096)
             if not chunk:
                 break
-            decrypted = bytes([decrypt_byte(privhex, b) for b in chunk])
-            f_out.write(decrypted)
+            f_out.write(decrypt_chunk(privhex, chunk))
 
 # ----------------------
 # Main CLI

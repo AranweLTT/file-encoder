@@ -100,25 +100,13 @@ def random_invertible_matrix(rng=None) -> np.ndarray:
         if is_invertible(M):
             return M
 
-# Choose a fixed public generator G (8x8 invertible). We'll pick one deterministically
-def fixed_G():
-    # Deterministic, but nontrivial invertible matrix (you can change these bits)
-    # Here we pick a matrix with a simple pattern but ensure it's invertible.
-    G = np.array([
-        [1,0,1,0,0,1,0,1],
-        [0,1,1,0,1,0,1,0],
-        [1,1,0,1,0,0,1,0],
-        [0,0,1,1,1,0,0,1],
-        [1,0,0,1,0,0,1,0],
-        [0,1,0,0,1,1,0,1],
-        [1,0,1,0,1,0,1,0],
-        [0,1,0,1,0,1,0,1],
-    ], dtype=np.uint8)
+def fixed_G(G_hex):
+    G = hex_to_mat(G_hex)
     if not is_invertible(G):
         raise RuntimeError("Chosen G is not invertible")
     return G, gf2_inv(G)
 
-G, G_inv = fixed_G()
+G, G_inv = fixed_G("a56ad239924daa55")
 
 def generate_keypair(rng=None):
     """Return (public_hex, private_dict). private_dict contains S and S_inv as matrices."""
@@ -168,9 +156,9 @@ def find_vanity_key(prefix_hex: str, max_tries: int = 10_000_000, progress_every
     tries = 0
     while tries < max_tries:
         tries += 1
-        pubhex, priv = generate_keypair(rng)
+        pubhex, privhex = generate_keypair(rng)
         if pubhex.startswith(prefix_hex):
-            return pubhex, priv, tries
+            return pubhex, privhex, tries
         if (tries % progress_every) == 0:
             # brief progress print
             print(f"tries={tries} (no match yet), last pub={pubhex}")
@@ -185,10 +173,11 @@ if __name__ == "__main__":
     # Find a vanity key starting with 'dead' (example) -- WARNING: may take many tries
     # small prefixes like 'ab' or 'dead' are OK to try interactively; bigger ones take exponentially longer.
     print("--- Vanity key generator ---")
-    pubhex, privhex, n = find_vanity_key("cafe", max_tries=200000, progress_every=10000)
+    pubhex, privhex, n = find_vanity_key("ab", max_tries=200000, progress_every=10000)
     print("Found after", n)
     print("Public hex:", pubhex)
     print("Private hex:", privhex)
+    print("G:", mat_to_hex(G))
 
     # test encrypt/decrypt
     pt = 0x4f # arbitrary byte

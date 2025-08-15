@@ -131,7 +131,7 @@ bool hex_to_mat(const string &h, uint8_t (*M)[8]) {
 void random_matrix(uint8_t (*M)[8]) {
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
-            M[i][j] = rand() % 2;
+            M[i][j] = rand() > (RAND_MAX / 2);
 }
 
 void random_invertible_matrix(uint8_t (*M)[8]) {
@@ -140,17 +140,9 @@ void random_invertible_matrix(uint8_t (*M)[8]) {
     } while (!is_invertible(M));
 }
 
-void fixed_G(uint8_t (*G)[8], uint8_t (*G_inv)[8]) {
-    uint8_t temp[8][8] = {
-        {1,0,1,0,0,1,0,1},
-        {0,1,1,0,1,0,1,0},
-        {1,1,0,1,0,0,1,0},
-        {0,0,1,1,1,0,0,1},
-        {1,0,0,1,0,0,1,0},
-        {0,1,0,0,1,1,0,1},
-        {1,0,1,0,1,0,1,0},
-        {0,1,0,1,0,1,0,1}
-    };
+void fixed_G(const string &ghex, uint8_t (*G)[8], uint8_t (*G_inv)[8]) {
+    uint8_t temp[8][8];
+    hex_to_mat(ghex ,temp);
     memcpy(G, temp, sizeof(temp));
     if (!gf2_inv(G, G_inv)) {
         throw runtime_error("Chosen G not invertible");
@@ -215,7 +207,7 @@ int main(int argc, char* argv[]) {
 
     string pubhex, privhex;
     uint8_t G[8][8], G_inv[8][8];
-    fixed_G(G, G_inv);
+    fixed_G("a56ad239924daa55", G, G_inv);
 
     cout << "Searching for vanity key from hexspeak dictionary..." << endl;
     cout << "Output format: <private-key>,<public-key>" << endl << endl;

@@ -64,22 +64,13 @@ def hex_to_mat(h: str) -> np.ndarray:
 # ----------------------
 # Fixed generator matrix
 # ----------------------
-def fixed_G():
-    G = np.array([
-        [1,0,1,0,0,1,0,1],
-        [0,1,1,0,1,0,1,0],
-        [1,1,0,1,0,0,1,0],
-        [0,0,1,1,1,0,0,1],
-        [1,0,0,1,0,0,1,0],
-        [0,1,0,0,1,1,0,1],
-        [1,0,1,0,1,0,1,0],
-        [0,1,0,1,0,1,0,1],
-    ], dtype=np.uint8)
+def fixed_G(G_hex):
+    G = hex_to_mat(G_hex)
     if not is_invertible(G):
         raise RuntimeError("Chosen G is not invertible")
     return G, gf2_inv(G)
 
-G, G_inv = fixed_G()
+G, G_inv = fixed_G("a56ad239924daa55")
 
 # ----------------------
 # Encrypt / Decrypt
